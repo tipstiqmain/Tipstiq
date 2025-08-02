@@ -1,103 +1,193 @@
-import Image from "next/image";
+// src/app/page.tsx
+
+'use client'; // This directive is required for client-side components in Next.js App Router
+
+import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi'; // Wagmi hooks for account, connect, disconnect, balance
+import { injected } from 'wagmi/connectors'; // Import the 'injected' function from wagmi/connectors
+import { formatUnits } from 'viem'; // For formatting token balances
+import { FanTippingUI } from '../components/FanTippingUI'; // Import FanTippingUI component
+import { useState } from 'react'; // Import useState for managing view
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Get account information (address, isConnected status, chainId)
+  const { address, isConnected, chainId } = useAccount();
+  // Get connect function and available connectors
+  const { connect, connectors } = useConnect();
+  // Get disconnect function
+  const { disconnect } = useDisconnect();
+  // Get balance for the connected account (defaults to native currency, e.g., MATIC on Polygon Amoy)
+  const { data: balance } = useBalance({ address });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Create an instance of the injected connector (MetaMask)
+  const injectedConnector = injected();
+
+  // Simulated Creator Wallet Address (replace with actual if integrating)
+  // This is the address where tips will be sent.
+  const creatorWalletAddress = '0xbFfb0f08C418f74bB0076925B175c0B4D9843EEB'; // Example address
+
+  // State to manage the current view: 'fan' or 'creator'
+  const [view, setView] = useState('fan'); // Default to fan view
+
+  // State for creator dashboard (simulated for now)
+  const [creatorBalance, setCreatorBalance] = useState(125.50); // Simulated USDC balance
+  const [isCashingOut, setIsCashingOut] = useState(false);
+  const [cashOutStatus, setCashOutStatus] = useState('');
+
+  // --- Creator Cash-Out Logic (Simulated) ---
+  const handleCashOut = async () => {
+    if (creatorBalance <= 0) {
+      setCashOutStatus('No balance to cash out.');
+      return;
+    }
+
+    setIsCashingOut(true);
+    setCashOutStatus(`Initiating cash out of ${creatorBalance} USDC...`);
+
+    // This is a placeholder for actual fiat off-ramp integration.
+    // In a real application, this would involve:
+    // 1. A backend service that interacts with a fiat off-ramp (e.g., Circle, Stripe Treasury).
+    // 2. The creator's USDC would be sent from their Polygon Amoy wallet to an address
+    //    controlled by the off-ramp service, which then converts to fiat.
+    // As per our simplified plan, no cross-chain transfer is needed here.
+
+    try {
+      // Simulate a successful cash-out
+      await new Promise(resolve => setTimeout(() => resolve(), 4000)); // Simulate processing time
+
+      setCashOutStatus(`Successfully cashed out ${creatorBalance} USDC to your linked bank account!`);
+      setCreatorBalance(0); // Reset balance after cash out
+    } catch (error: any) {
+      setCashOutStatus(`Cash out failed: ${error.message}`);
+      console.error('Cash out error:', error);
+    } finally {
+      setIsCashingOut(false);
+    }
+  };
+
+  // Tailwind CSS classes for consistent styling
+  const buttonClasses = "px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-in-out shadow-lg";
+  const primaryButtonClasses = `${buttonClasses} bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-75`;
+  const secondaryButtonClasses = `${buttonClasses} bg-gray-200 text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`;
+  const cardClasses = "bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full";
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-900 text-white font-inter">
+      <div className="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h1 className="text-3xl font-bold mb-6 text-purple-400">Tipstiq</h1>
+
+        {/* Header/Navigation for views */}
+        <header className="w-full mb-8 flex justify-center space-x-4">
+          <button
+            onClick={() => setView('fan')}
+            className={`${secondaryButtonClasses} ${view === 'fan' ? 'bg-purple-500 text-white' : ''}`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Fan View
+          </button>
+          <button
+            onClick={() => setView('creator')}
+            className={`${secondaryButtonClasses} ${view === 'creator' ? 'bg-purple-500 text-white' : ''}`}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            Creator View
+          </button>
+        </header>
+
+        {/* Fan View Section */}
+        {view === 'fan' && (
+          <div className={cardClasses}>
+            <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">Tip Your Favorite Creator</h2>
+
+            {/* Wallet Connection Section */}
+            <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+              {!isConnected ? (
+                // Display connect button if not connected
+                <button
+                  onClick={() => connect({ connector: injectedConnector })} // Connect using the injected connector (MetaMask)
+                  className={`${primaryButtonClasses} w-full`}
+                >
+                  Connect Wallet (MetaMask)
+                </button>
+              ) : (
+                // Display connected wallet info
+                <div className="text-center space-y-2">
+                  <p className="text-purple-700 font-semibold text-lg">
+                    Connected: <span className="font-mono text-green-600 break-all">{address?.substring(0, 6)}...{address?.substring(address.length - 4)}</span>
+                  </p>
+                  <p className="text-gray-600 text-sm">Chain ID: <span className="font-mono text-blue-500">{chainId}</span></p>
+                  {balance && (
+                    <p className="text-gray-600 text-sm">
+                      MATIC Balance: <span className="font-mono text-yellow-500">
+                        {parseFloat(formatUnits(balance.value, balance.decimals)).toFixed(4)} {balance.symbol}
+                      </span>
+                    </p>
+                  )}
+                  <button
+                    onClick={() => disconnect()}
+                    className="mt-2 text-sm text-red-500 hover:text-red-700 underline"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Render FanTippingUI if wallet is connected */}
+            {isConnected ? (
+              // FanTippingUI will now internally use wagmi's useWalletClient to get the signer
+              <FanTippingUI creatorWalletAddress={creatorWalletAddress} />
+            ) : (
+              <p className="text-center text-gray-500 mt-4">Connect your wallet to send a tip.</p>
+            )}
+          </div>
+        )}
+
+        {/* Creator View Section */}
+        {view === 'creator' && (
+          <div className={cardClasses}>
+            <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">Your Creator Dashboard</h2>
+            <div className="mb-4 text-center">
+              <p className="text-gray-600 text-lg">Current USDC Balance:</p>
+              <p className="text-5xl font-extrabold text-purple-800 mt-2">${creatorBalance.toFixed(2)}</p>
+            </div>
+            <div className="mb-6 text-center">
+              <p className="text-gray-600 text-sm">Your Tipstiq Wallet Address:</p>
+              <p className="text-sm font-mono bg-gray-100 p-2 rounded-lg inline-block break-all mt-1">
+                {creatorWalletAddress}
+              </p>
+              <button
+                onClick={() => {
+                  // Using document.execCommand('copy') for clipboard as navigator.clipboard.writeText() might not work in some iFrame environments
+                  const el = document.createElement('textarea');
+                  el.value = creatorWalletAddress;
+                  document.body.appendChild(el);
+                  el.select();
+                  document.execCommand('copy');
+                  document.body.removeChild(el);
+                  // Replace alert with a custom modal/toast notification in a production app
+                  alert('Address copied to clipboard!');
+                }}
+                className="ml-2 text-purple-600 hover:text-purple-800 text-sm"
+              >
+                (Copy)
+              </button>
+            </div>
+            <button
+              onClick={handleCashOut}
+              className={`${primaryButtonClasses} w-full ${creatorBalance <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isCashingOut || creatorBalance <= 0}
+            >
+              {isCashingOut ? 'Processing Cash Out...' : 'Cash Out Now'}
+            </button>
+            {cashOutStatus && (
+              <p className={`mt-4 text-center text-sm ${cashOutStatus.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+                {cashOutStatus}
+              </p>
+            )}
+            <p className="text-center text-gray-500 text-xs mt-6">
+              Note: Actual blockchain and fiat integrations require backend services and API keys. This is a UI demonstration.
+            </p>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
