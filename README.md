@@ -1,13 +1,9 @@
 # Tipstiq
 
-Welcome to Tipstiq! This is a web application designed to [briefly describe what your app does, e.g., "provide a platform for users to share and discover tips, tricks, and life hacks."]. The project is built with [mention key technologies like Go, Next.js, etc.].
+Welcome to Tipstiq.
 
 ## Features
 
--   **User Authentication:** Secure sign-in and account management.
--   **Content Creation:** A simple interface for creating and publishing new tips.
--   **Discovery:** Easily find popular and relevant tips through a clean interface.
--   **[Add more features here, e.g., commenting, upvoting, saving tips]**
 
 ## Getting Started
 
