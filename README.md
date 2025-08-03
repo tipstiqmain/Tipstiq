@@ -1,10 +1,5 @@
 # Tipstiq
 
-Welcome to Tipstiq.
-
-## Features
-
-
 ## Getting Started
 
 ### Prerequisites
