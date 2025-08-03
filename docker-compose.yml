@@ -1,0 +1,35 @@
+# A Docker Compose file to build and run the oauth-app and crypto-app
+# This file should be placed in the ~/Desktop/Project/tsq/ directory.
+
+services:
+  # The service for the OAuth2 application
+  oauth-app:
+    # Build the image from the Dockerfile in the 'oa2' subdirectory
+    build: ./oa2
+    container_name: oauth-container
+    # Map port 8080 on the host to port 3000 in the container
+    ports:
+      - "8080:3000"
+    # Mount the .env file to pass environment variables to the container
+    env_file:
+      - ./oa2/.env
+    # Explicitly set the PORT environment variable to 3000
+    # This aligns the application's internal port with the Docker mapping
+    environment:
+      - PORT=3000
+    # Always restart the container if it fails, to ensure resilience
+    restart: always
+    # The OAuth app depends on the crypto app, so it will start after
+    depends_on:
+      - crypto-app
+
+  # The service for the Crypto application (Next.js)
+  crypto-app:
+    # Build the image from the Dockerfile in the 'crypto' subdirectory
+    build: ./crypto
+    container_name: crypto-container
+    # Map port 3001 on the host to port 3000 in the container
+    ports:
+      - "3001:3000"
+    # Always restart the container if it fails, to ensure resilience
+    restart: always
