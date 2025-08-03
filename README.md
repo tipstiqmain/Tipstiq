@@ -63,10 +63,4 @@ npm run dev
 
 The application should now be running and accessible at `http://localhost:3000` (or the port specified in your configuration).
 
-## Contributing
 
-We welcome contributions! Please feel free to open issues or submit pull requests.
-
-## License
-
-This project is licensed under the [Your License Here] License - see the `LICENSE` file for details.
