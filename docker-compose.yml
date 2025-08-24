@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  main-page:
+    build: ./main-page
+    ports:
+      - "80:8000"
+    networks:
+      - app-network
+
+  crypto:
+    build: ./crypto
+    ports:
+      - "5000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - oa2
+
+  oa2:
+    build: ./oa2
+    ports:
+      - "2000:2000"
+    environment:
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - SESSION_SECRET=a-very-secret-key
+      - JWT_SECRET=a-super-secret-jwt-key
+      - OAUTH_REDIRECT_URI=http://localhost:2000/auth/google/callback
+      - PORT=2000
+    networks:
+      - app-network
+
+  vault:
+    build: ./vault
+    ports:
+      - "7000:4000"
+    networks:
+      - app-network
+
+  purchase:
+    build: ./purchase
+    ports:
+      - "9000:9000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

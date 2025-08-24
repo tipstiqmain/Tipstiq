@@ -1,0 +1,18 @@
+[
+    {
+        "threshold": 0,
+        "fee": 0.50
+    },
+    {
+        "threshold": 100,
+        "fee": 1.00
+    },
+    {
+        "threshold": 500,
+        "fee": 2.50
+    },
+    {
+        "threshold": 1000,
+        "fee": 5.00
+    }
+]

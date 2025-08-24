@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Hub</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: lightblue;
+            color: black;
+        }
+        .container {
+            text-align: center;
+            background-color: pink;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .tipstiq-button {
+            background-color: #673AB7; /* Deep Purple */
+        }
+        .vault-button {
+            background-color: green; /* Green */
+            color: white;
+        }
+        .purchase-button {
+            background-color: red; /* Red */
+            color: white;
+        }
+        .project-logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="tsqlogo.png" alt="Project Hub Logo" class="project-logo">
+        <h1>Project Hub</h1>
+        <div class="button-container">
+            <a href="http://localhost:5000" class="button tipstiq-button">Go to Tipstiq App</a>
+            <a href="http://localhost:7000" class="button vault-button">Go to Vault App</a>
+            <a href="http://localhost:9000" class="button purchase-button">Go to Purchase App</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "purchase-app",
+  "version": "1.0.0",
+  "description": "A simple web app for purchase service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node ../build-purchase.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ethers": "^6.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "hardhat": "^2.26.3"
+  }
+}
